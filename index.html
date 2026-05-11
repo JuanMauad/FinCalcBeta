@@ -1219,7 +1219,7 @@
     }
     .port-card:hover:not(.port-card-locked) {
       transform: translateY(-2px);
-      box-shadow: 0 14px 36px rgba(26,79,160,.14);
+      box-shadow: 0 14px 36px rgba(26,79,160,.16);
     }
     .port-card-head h3 {
       margin: 6px 0 4px;
@@ -1784,16 +1784,6 @@
     }
     .opt-agresivo .ppt.active { color: #1a1206; }
     .opt-agresivo .donut-center-lbl { fill: #fde68a; }
-    /* CTA dorado sobre fondo negro */
-    .opt-agresivo .port-cta-opt {
-      background: linear-gradient(135deg, #facc15 0%, #d4a017 100%);
-      color: #1a1206;
-      box-shadow: 0 6px 20px rgba(250,204,21,.32);
-    }
-    .opt-agresivo .port-cta-opt:hover {
-      filter: brightness(1.06);
-      box-shadow: 0 10px 26px rgba(250,204,21,.42);
-    }
 
     /* ── Glow animado del fondo agresivo (halo dorado pulsante) ──
        Usamos un ::after sobre la card que sólo aparece en .opt-agresivo. */
@@ -1821,23 +1811,16 @@
     }
 
     /* ── Glow dorado sobre las porciones (sólo agresivo) ── */
+    /* Porciones del agresivo: glow dorado estático (sin animación de pulso),
+       sólo conservan el fade-in inicial y la flotación rápida. */
     .opt-agresivo .port-donut .ds-aggressive {
       animation:
         donutFadeIn .5s ease-out forwards var(--ds-delay, 0s),
-        dsGoldGlow 6s ease-in-out infinite calc(var(--ds-delay, 0s) + .45s),
         dsFloatFast 2.4s ease-in-out infinite calc(var(--ds-delay, 0s) + .45s);
-    }
-    @keyframes dsGoldGlow {
-      0%, 100% {
-        filter: drop-shadow(0 2px 3px rgba(0,0,0,.45))
-                brightness(.95) saturate(1.05);
-      }
-      50% {
-        filter: drop-shadow(0 2px 3px rgba(0,0,0,.45))
-                drop-shadow(0 0 6px rgba(250,204,21,.55))
-                drop-shadow(0 0 12px rgba(217,148,38,.28))
-                brightness(1.16) saturate(1.22);
-      }
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,.45))
+              drop-shadow(0 0 6px rgba(250,204,21,.55))
+              drop-shadow(0 0 12px rgba(217,148,38,.28))
+              brightness(1.16) saturate(1.22);
     }
     @media (prefers-reduced-motion: reduce) {
       .opt-agresivo::after { animation: none; opacity: .7; }
@@ -1845,8 +1828,421 @@
     }
     /* En fondos oscuros el CTA debe seguir destacando */
     .opt-card .port-cta-opt { background: rgba(255,255,255,.92); color: var(--blue); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
-    .opt-conservador .port-cta-opt { background: var(--blue); color: #fff; }
     .opt-card .port-cta-opt:hover { filter: brightness(.96); }
+    .opt-conservador .port-cta-opt { background: var(--blue); color: #fff; }
+    /* Agresivo: degradé violeta-negro + borde y texto dorados, glow violeta+oro */
+    .opt-agresivo .port-cta-opt {
+      background: linear-gradient(135deg, #4c1d95 0%, #2e1065 50%, #050003 100%);
+      color: #fde68a;
+      border: 1.5px solid rgba(250,204,21,.55);
+      text-shadow: 0 0 8px rgba(250,204,21,.35);
+      box-shadow:
+        0 6px 22px rgba(168,85,247,.32),
+        0 0 14px rgba(250,204,21,.20),
+        inset 0 1px 0 rgba(250,204,21,.18);
+    }
+    .opt-agresivo .port-cta-opt:hover {
+      filter: brightness(1.18);
+      box-shadow:
+        0 10px 28px rgba(168,85,247,.45),
+        0 0 22px rgba(250,204,21,.35),
+        inset 0 1px 0 rgba(250,204,21,.28);
+    }
+
+    /* ── EDICIÓN DE PORTAFOLIO MANUAL ── */
+    .pm-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+      position: relative;
+    }
+    .pm-back {
+      position: static;
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .pm-header { text-align: center; margin-bottom: 22px; }
+    .pm-header h2 {
+      margin: 8px 0;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+    .pm-header p {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: .92rem;
+      color: var(--text-mid);
+    }
+
+    .pm-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1.2fr;
+      gap: 18px;
+    }
+    @media (max-width: 1200px) { .pm-layout { grid-template-columns: 1fr; } }
+
+    .pm-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(26,79,160,.08);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .pm-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .pm-card-head h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -.1px;
+    }
+
+    /* Unit toggle (% / $ / #) */
+    .pm-unit-toggle {
+      display: inline-flex;
+      gap: 2px;
+      background: var(--blue-pale);
+      padding: 3px;
+      border-radius: 9px;
+    }
+    .pm-unit-toggle button {
+      font-family: inherit;
+      font-size: .78rem;
+      font-weight: 800;
+      padding: 5px 11px;
+      border: none;
+      background: transparent;
+      color: var(--text-mid);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .pm-unit-toggle button:hover:not(.active) { color: var(--blue); }
+    .pm-unit-toggle button.active {
+      background: var(--white);
+      color: var(--blue);
+      box-shadow: 0 1px 4px rgba(26,79,160,.18);
+    }
+
+    /* Sub-secciones (riesgosos / renta fija) */
+    .pm-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 12px;
+    }
+    .pm-section + .pm-section {
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+    .pm-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
+    }
+    .pm-section-head h4 {
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--text-mid);
+    }
+    .pm-count {
+      font-size: .68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--blue-pale);
+      color: var(--blue);
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-add-fixed { grid-template-columns: 1fr 90px auto; }
+    .pm-add-fixed input[type="text"] { text-transform: none; font-weight: 600; }
+
+    /* Lista de activos */
+    .pm-asset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 40px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--blue) transparent;
+    }
+    .pm-asset-list::-webkit-scrollbar { width: 6px; }
+    .pm-asset-list::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 3px; }
+    .pm-empty {
+      text-align: center;
+      color: var(--text-light);
+      font-size: .82rem;
+      padding: 18px 10px;
+      font-style: italic;
+    }
+    .pm-row {
+      display: grid;
+      grid-template-columns: 12px 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--blue-pale);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      transition: border-color .15s;
+    }
+    .pm-row:hover { border-color: var(--border); }
+    .pm-row.has-error { border-color: var(--red); background: var(--red-bg, rgba(239,68,68,.08)); }
+    .pm-row .pm-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .pm-row-main { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+    .pm-row-tkr {
+      font-weight: 800;
+      font-size: .92rem;
+      color: var(--text-dark);
+      letter-spacing: .2px;
+    }
+    .pm-row-sub {
+      font-size: .68rem;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+    .pm-row-sub.pm-loading::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      border: 1.5px solid var(--blue-light);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: pm-spin .7s linear infinite;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+    @keyframes pm-spin { to { transform: rotate(360deg); } }
+    .pm-row-sub.pm-err { color: var(--red); }
+    .pm-row-input {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0 6px;
+      min-width: 92px;
+    }
+    .pm-row-input:focus-within { border-color: var(--blue); }
+    .pm-row-input input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      width: 100%;
+      padding: 6px 2px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-row-input input::-webkit-outer-spin-button,
+    .pm-row-input input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .pm-row-input .pm-unit-suffix {
+      font-size: .68rem;
+      font-weight: 800;
+      color: var(--text-light);
+      padding-left: 2px;
+    }
+    .pm-row-remove {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-light);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      transition: background .15s, color .15s;
+    }
+    .pm-row-remove:hover { background: rgba(239,68,68,.12); color: var(--red); }
+
+    /* Form de agregar */
+    .pm-add-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .pm-add-row input,
+    .pm-add-row select {
+      font-family: inherit;
+      font-size: .82rem;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--text-dark);
+      outline: none;
+    }
+    .pm-add-row input { text-transform: uppercase; font-weight: 700; }
+    .pm-add-row input:focus,
+    .pm-add-row select:focus { border-color: var(--blue); }
+    .pm-add-btn {
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: filter .15s;
+    }
+    .pm-add-btn:hover { filter: brightness(1.08); }
+    .pm-add-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .pm-add-error {
+      font-size: .75rem;
+      color: var(--red);
+      min-height: 16px;
+      margin-top: 2px;
+    }
+
+    /* Donut central */
+    .pm-donut {
+      width: 100%;
+      aspect-ratio: 1/1;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+    .pm-vtp {
+      font-size: .82rem;
+      font-weight: 800;
+      color: var(--blue);
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-warning {
+      text-align: center;
+      font-size: .76rem;
+      font-weight: 700;
+      color: #f59e0b;
+      background: rgba(245,158,11,.12);
+      padding: 7px 10px;
+      border-radius: 8px;
+    }
+    .pm-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      justify-content: center;
+      font-size: .78rem;
+    }
+    .pm-legend > div {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-mid);
+    }
+    .pm-legend .pl-dot { width: 9px; height: 9px; border-radius: 2px; }
+    .pm-legend strong { color: var(--text-dark); font-weight: 700; }
+
+    .pm-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .pm-metric { text-align: center; display: flex; flex-direction: column; gap: 2px; }
+    .pm-metric span {
+      font-size: .58rem;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+    .pm-metric strong {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Line chart (performance histórica) */
+    .pm-line-chart {
+      height: 260px;
+      background: var(--blue-pale);
+      border-radius: 12px;
+      padding: 8px 8px 22px 44px;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .pm-line-chart svg { width: 100%; height: 100%; display: block; }
+    .pm-line-empty {
+      display: flex; align-items: center; justify-content: center;
+      height: 100%;
+      color: var(--text-light);
+      font-size: .85rem;
+      font-style: italic;
+    }
+    .pm-line-legend {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      font-size: .76rem;
+      color: var(--text-mid);
+    }
+    .pm-line-legend .pll-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: -1px;
+    }
+    .pm-perf-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .pm-perf-stats > div {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .pm-perf-stats span {
+      font-size: .58rem;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+    .pm-perf-stats strong {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-bench-label { font-size: .74rem; color: var(--text-light); }
+    .pm-bench-label strong { color: var(--blue); font-weight: 800; }
 
     /* Placeholder onboarding (Comenzar manual / Comenzar optimizado) */
     .port-onboard {
@@ -2975,20 +3371,108 @@
   </div>
 </section>
 
-<!-- Placeholder: Onboarding portafolio MANUAL -->
+<!-- Edición funcional del portafolio MANUAL -->
 <section class="tab-section" id="tab-portafolio-manual">
-  <div class="port-onboard">
-    <button type="button" class="port-back" data-back-to="portafolio">← Volver a Portafolio</button>
-    <div class="port-onboard-icon">🛠️</div>
-    <span class="port-eyebrow">Portafolio · Manual</span>
-    <h2>Diseñá tu portafolio desde cero</h2>
-    <p>Acá vas a poder elegir tus activos, ajustar pesos finos, importar holdings desde un CSV y vincular brokers para track real-time. <strong>Próximamente.</strong></p>
-    <ul class="port-onboard-features">
-      <li><span>1</span> Elegí activos por ticker (Yahoo Finance)</li>
-      <li><span>2</span> Ajustá pesos con sliders / inputs</li>
-      <li><span>3</span> Importá desde CSV o conectá un broker</li>
-      <li><span>4</span> Seguí tu allocation real vs. la planeada</li>
-    </ul>
+  <div class="pm-page">
+    <button type="button" class="port-back pm-back" data-back-to="portafolio">← Volver</button>
+    <header class="pm-header">
+      <span class="port-eyebrow">Portafolio · Manual</span>
+      <h2>Diseñá tu portafolio</h2>
+      <p>Cargá tus activos por ticker, elegí la unidad de entrada y obtené métricas de riesgo y performance histórica calculadas con datos reales de Yahoo Finance.</p>
+    </header>
+
+    <div class="pm-layout">
+      <!-- ── COLUMNA IZQUIERDA: composición ── -->
+      <aside class="pm-col pm-col-left">
+        <div class="pm-card">
+          <header class="pm-card-head">
+            <h3>Composición</h3>
+            <div class="pm-unit-toggle" role="tablist" aria-label="Unidad">
+              <button type="button" data-unit="pct" class="active" title="Porcentaje">%</button>
+              <button type="button" data-unit="usd" title="Dinero">$</button>
+              <button type="button" data-unit="qty" title="Cantidad">#</button>
+            </div>
+          </header>
+
+          <!-- ── Sección 1: Riesgosos (acciones / ETFs) ── -->
+          <section class="pm-section">
+            <div class="pm-section-head">
+              <h4>Activos riesgosos</h4>
+              <span class="pm-count" id="pm-count-risky">0</span>
+            </div>
+            <div class="pm-asset-list" id="pm-assets-risky"></div>
+            <form class="pm-add-row" id="pm-add-risky" autocomplete="off">
+              <input type="text" id="pm-new-ticker" placeholder="Ticker (AAPL, MSFT...)" maxlength="12">
+              <button type="submit" class="pm-add-btn">+ Agregar</button>
+            </form>
+            <div class="pm-add-error" id="pm-add-error-risky"></div>
+          </section>
+
+          <!-- ── Sección 2: Renta fija (TIR directa, sin ticker) ── -->
+          <section class="pm-section">
+            <div class="pm-section-head">
+              <h4>Renta fija</h4>
+              <span class="pm-count" id="pm-count-fixed">0</span>
+            </div>
+            <div class="pm-asset-list" id="pm-assets-fixed"></div>
+            <form class="pm-add-row pm-add-fixed" id="pm-add-fixed" autocomplete="off">
+              <input type="text" id="pm-rf-name" placeholder="Nombre (ej: LECAP)" maxlength="20">
+              <input type="number" id="pm-rf-tir" placeholder="TIR %" step="0.1" min="0" inputmode="decimal">
+              <button type="submit" class="pm-add-btn">+ Agregar</button>
+            </form>
+            <div class="pm-add-error" id="pm-add-error-fixed"></div>
+          </section>
+        </div>
+      </aside>
+
+      <!-- ── COLUMNA CENTRAL: donut + métricas ── -->
+      <div class="pm-col pm-col-center">
+        <div class="pm-card">
+          <header class="pm-card-head">
+            <h3>Distribución</h3>
+            <span class="pm-vtp" id="pm-vtp">—</span>
+          </header>
+          <div class="pm-donut port-donut" id="pm-donut" aria-label="Donut portafolio"></div>
+          <div class="pm-warning" id="pm-warning" hidden></div>
+          <div class="pm-legend" id="pm-legend"></div>
+
+          <div class="pm-metrics">
+            <div class="pm-metric"><span>Retorno esp.</span><strong id="pm-ret">—</strong></div>
+            <div class="pm-metric"><span>Volatilidad</span><strong id="pm-vol">—</strong></div>
+            <div class="pm-metric"><span>Sharpe</span><strong id="pm-sharpe">—</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COLUMNA DERECHA: performance histórica ── -->
+      <div class="pm-col pm-col-right">
+        <div class="pm-card">
+          <header class="pm-card-head">
+            <h3>Performance histórica</h3>
+            <span class="pm-bench-label">vs <strong>SPY</strong></span>
+          </header>
+          <div class="pm-line-chart" id="pm-line-chart"></div>
+          <div class="pm-line-legend">
+            <span><span class="pll-dot" style="background:var(--blue)"></span>Portafolio</span>
+            <span><span class="pll-dot" style="background:var(--text-light)"></span>SPY</span>
+          </div>
+          <div class="pm-perf-stats">
+            <div><span>Total return</span><strong id="pm-total">—</strong></div>
+            <div><span>CAGR</span><strong id="pm-cagr">—</strong></div>
+            <div><span>Max DD</span><strong id="pm-mdd">—</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="port-disclaimer" role="note">
+      <svg class="pd-info" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        <line x1="8" y1="7" x2="8" y2="11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="8" cy="4.5" r="0.95" fill="currentColor"/>
+      </svg>
+      <span>Métricas calculadas a partir de retornos mensuales históricos. Rendimientos pasados no garantizan rendimientos futuros.</span>
+    </div>
   </div>
 </section>
 
@@ -5086,9 +5570,583 @@
       });
     });
 
+    // ── Reset al perfil conservador cada vez que se abre la pestaña ──
+    // Usamos un MutationObserver sobre #tab-portafolio para detectar cuándo
+    // recibe la clase .active (= el usuario navegó a esta tab). Cubre todos
+    // los caminos: click en navbar, "Volver" desde sub-pages, showTab() programático.
+    const portTabEl = document.getElementById('tab-portafolio');
+    function resetToConservador() {
+      isLocked = false;
+      stopRotate();
+      currentProfile = 'conservador';
+      renderOpt();          // pinta inmediatamente sin animación de switch
+      startRotate();
+    }
+    if (portTabEl) {
+      const obs = new MutationObserver(muts => {
+        for (const m of muts) {
+          if (m.attributeName === 'class' && portTabEl.classList.contains('active')) {
+            resetToConservador();
+            break;
+          }
+        }
+      });
+      obs.observe(portTabEl, { attributes: true, attributeFilter: ['class'] });
+    }
+
     renderManual();
     renderOpt();
     startRotate();
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════════
+     PORTAFOLIO · EDICIÓN MANUAL (con datos reales de Yahoo Finance)
+     ───────────────────────────────────────────────────────────────────
+     Arquitectura:
+       · STORE central (state + dispatch + subscribe). Simple, sin libs.
+       · MOTOR de cálculo puro: normalizeWeights() → computePortfolio().
+       · CAPA de datos: fetchAssetData() pega al Apps Script proxy.
+       · RENDER reactivo: cada cambio de estado dispara renderAll().
+     Esto permite migrar a Redux/Zustand sin cambiar la lógica de negocio.
+     ═══════════════════════════════════════════════════════════════════ */
+  (function initPortafolioManual() {
+    const root = document.getElementById('tab-portafolio-manual');
+    if (!root) return;
+
+    // ── DOM refs ─────────────────────────────────────────────
+    const unitToggle  = root.querySelector('.pm-unit-toggle');
+    // Sección riesgosos
+    const listRiskyEl  = root.querySelector('#pm-assets-risky');
+    const countRiskyEl = root.querySelector('#pm-count-risky');
+    const addRiskyForm = root.querySelector('#pm-add-risky');
+    const newTickerEl  = root.querySelector('#pm-new-ticker');
+    const errRiskyEl   = root.querySelector('#pm-add-error-risky');
+    // Sección renta fija
+    const listFixedEl  = root.querySelector('#pm-assets-fixed');
+    const countFixedEl = root.querySelector('#pm-count-fixed');
+    const addFixedForm = root.querySelector('#pm-add-fixed');
+    const rfNameEl     = root.querySelector('#pm-rf-name');
+    const rfTirEl      = root.querySelector('#pm-rf-tir');
+    const errFixedEl   = root.querySelector('#pm-add-error-fixed');
+    const donutEl     = root.querySelector('#pm-donut');
+    const warningEl   = root.querySelector('#pm-warning');
+    const legendEl    = root.querySelector('#pm-legend');
+    const vtpEl       = root.querySelector('#pm-vtp');
+    const retEl       = root.querySelector('#pm-ret');
+    const volEl       = root.querySelector('#pm-vol');
+    const shrEl       = root.querySelector('#pm-sharpe');
+    const lineChartEl = root.querySelector('#pm-line-chart');
+    const totalEl     = root.querySelector('#pm-total');
+    const cagrEl      = root.querySelector('#pm-cagr');
+    const mddEl       = root.querySelector('#pm-mdd');
+
+    // Paleta de colores para los activos (8 tonos azules/teal, ciclamos si hace falta)
+    const PM_PALETTE = ['#1e40af', '#2563eb', '#3b82f6', '#60a5fa',
+                        '#06b6d4', '#0ea5e9', '#7dd3fc', '#22d3ee'];
+    const RF_PALETTE = ['#16a34a', '#22c55e', '#65a30d', '#84cc16'];   // renta fija → verdes
+    const RF_RATE = 0.02;     // tasa libre de riesgo anual (para Sharpe)
+
+    // ═══ STORE ═══════════════════════════════════════════════
+    const state = {
+      unit: 'pct',           // 'pct' | 'usd' | 'qty'
+      assets: [],            // [{ id, ticker, klass, value, price, monthlyRets, monthlyCloses, labels, status, error }]
+      benchmark: null,       // { ticker: 'SPY', monthlyRets, labels }
+      benchmarkLoading: true,
+    };
+    const subscribers = [];
+    function dispatch(mutator) {
+      mutator(state);
+      subscribers.forEach(fn => fn(state));
+    }
+    function subscribe(fn) { subscribers.push(fn); }
+
+    // ═══ CAPA DE DATOS (Apps Script proxy → Yahoo Finance) ═══
+    async function fetchMonthly(ticker) {
+      const url = `${APPS_SCRIPT_URL}?action=monthly&ticker=${encodeURIComponent(ticker)}`;
+      const r = await fetch(url, { redirect: 'follow' });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || ticker + ' no encontrado');
+      return j;   // { returns, labels, closes }
+    }
+    async function fetchQuote(ticker) {
+      const url = `${APPS_SCRIPT_URL}?action=quotes&tickers=${encodeURIComponent(ticker)}`;
+      const r = await fetch(url, { redirect: 'follow' });
+      const j = await r.json();
+      const q = (j.quotes || [])[0];
+      if (!q || q.error) throw new Error((q && q.error) || 'sin precio');
+      return q;   // { symbol, price, name, ... }
+    }
+    // Llamada combinada para nuevos activos
+    async function fetchAssetData(ticker) {
+      const [monthly, quote] = await Promise.all([
+        fetchMonthly(ticker),
+        fetchQuote(ticker),
+      ]);
+      return {
+        ticker:        quote.symbol,
+        price:         quote.price,
+        monthlyRets:   monthly.returns,        // chronological %
+        monthlyCloses: monthly.closes,
+        labels:        monthly.labels,
+      };
+    }
+
+    // ═══ MOTOR DE CÁLCULO ════════════════════════════════════
+    /**
+     * normalizeWeights(state) → [{ asset, weight, subtotal }]
+     *
+     *  · unit='pct': el value del usuario YA es el porcentaje deseado.
+     *               weight_i = value_i / 100. Si Σ ≠ 100 marcamos "desbalanceada".
+     *  · unit='usd': el value es el monto en USD. weight_i = value_i / Σ.
+     *  · unit='qty': activos riesgosos → subtotal = qty × price actual.
+     *               Renta fija → input siempre tratado como USD.
+     *               weight_i = subtotal_i / Σ.
+     */
+    function normalizeWeights(s) {
+      const ready = s.assets.filter(a => a.status === 'ready');
+      if (!ready.length) return { rows: [], totalUsd: 0, balanced: true, sumPct: 0 };
+
+      const rows = ready.map(a => {
+        let subtotal = 0;
+        if (s.unit === 'pct') {
+          subtotal = a.value || 0;
+        } else if (s.unit === 'usd') {
+          subtotal = a.value || 0;
+        } else { // 'qty'
+          if (a.klass === 'fixed') {
+            subtotal = a.value || 0;          // renta fija: locked en USD
+          } else {
+            subtotal = (a.value || 0) * (a.price || 0);
+          }
+        }
+        return { asset: a, subtotal };
+      });
+
+      if (s.unit === 'pct') {
+        const sumPct = rows.reduce((acc, r) => acc + r.subtotal, 0);
+        const out = rows.map(r => ({ ...r, weight: (r.subtotal || 0) / 100 }));
+        return { rows: out, totalUsd: null, balanced: Math.abs(sumPct - 100) < 0.001, sumPct };
+      }
+      const totalUsd = rows.reduce((acc, r) => acc + r.subtotal, 0);
+      if (totalUsd <= 0) return { rows: rows.map(r => ({ ...r, weight: 0 })), totalUsd, balanced: false, sumPct: 0 };
+      const out = rows.map(r => ({ ...r, weight: r.subtotal / totalUsd }));
+      return { rows: out, totalUsd, balanced: true, sumPct: 100 };
+    }
+
+    /**
+     * computePortfolio(weightedRows) →
+     *   { meanAnnual, volAnnual, sharpe, cumPortfolio: [...], cumBenchmark: [...], labels, total, cagr, mdd }
+     *
+     * Lógica: encontramos el rango de meses COMÚN entre todos los activos y el benchmark,
+     * computamos el retorno mensual del portafolio como Σ w_i · ret_i(t), y de ahí
+     * derivamos mean / std / serie acumulada (índice 100).
+     */
+    function computePortfolio(weightedRows, benchmark) {
+      const validAll = weightedRows.filter(r => r.weight > 0);
+      if (!validAll.length) return null;
+
+      const validRisky = validAll.filter(r => r.asset.klass === 'risky' && r.asset.monthlyRets && r.asset.labels);
+      const validFixed = validAll.filter(r => r.asset.klass === 'fixed');
+
+      // El timeline base sale de los activos riesgosos (con datos reales).
+      // Si NO hay riesgosos, usamos el benchmark; si tampoco hay, sintetizamos 60 meses
+      // hacia atrás desde hoy para poder dibujar la curva de RF (línea recta creciente).
+      let commonOrdered;
+      if (validRisky.length) {
+        let common = new Set(validRisky[0].asset.labels);
+        for (let i = 1; i < validRisky.length; i++) {
+          const ls = new Set(validRisky[i].asset.labels);
+          common = new Set([...common].filter(x => ls.has(x)));
+        }
+        if (benchmark) {
+          const bs = new Set(benchmark.labels);
+          common = new Set([...common].filter(x => bs.has(x)));
+        }
+        if (common.size < 6) return null;
+        commonOrdered = validRisky[0].asset.labels.filter(l => common.has(l));
+      } else if (benchmark) {
+        commonOrdered = benchmark.labels.slice(-Math.min(benchmark.labels.length, 60));
+      } else {
+        // Sintetizamos 60 meses de etiquetas "M YYYY" para portfolios 100% RF
+        const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        const now = new Date();
+        commonOrdered = [];
+        for (let k = 59; k >= 0; k--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - k, 1);
+          commonOrdered.push(`${months[d.getMonth()]} ${d.getFullYear()}`);
+        }
+      }
+
+      // Retorno mensual sintético de cada RF (TIR anual → mensual lineal, en %)
+      const fixedMonthlyPct = id => {
+        const rf = validFixed.find(r => r.asset.id === id);
+        return rf ? rf.asset.tir / 12 : 0;
+      };
+
+      // Para cada mes común: contribución de riesgosos (datos reales)
+      // + contribución de cada RF (constante = tir/12). Todo en %.
+      const portRets = commonOrdered.map(label => {
+        let r = 0;
+        validRisky.forEach(({ asset, weight }) => {
+          const idx = asset.labels.indexOf(label);
+          r += weight * (asset.monthlyRets[idx] || 0);
+        });
+        validFixed.forEach(({ asset, weight }) => {
+          r += weight * (asset.tir / 12);
+        });
+        return r;
+      });
+      // valid se usa abajo en la lógica original para evaluar consistencia
+      const valid = validRisky;
+
+      // Estadísticos del portafolio
+      const meanM   = avg(portRets) / 100;
+      const varianceM = portRets.length > 1
+        ? portRets.reduce((a, p) => a + Math.pow(p / 100 - meanM, 2), 0) / (portRets.length - 1)
+        : 0;
+      const stdM    = Math.sqrt(varianceM);
+      const meanAnnual = meanM * 12 * 100;                  // % anual
+      const volAnnual  = stdM  * Math.sqrt(12) * 100;       // % anual
+      const sharpe = stdM > 0 ? (meanM * 12 - RF_RATE) / (stdM * Math.sqrt(12)) : 0;
+
+      // Serie acumulada índice 100 (portafolio + benchmark)
+      const cumPortfolio = cumulativeFromReturns(portRets);
+      let cumBenchmark = null;
+      if (benchmark) {
+        const benchRets = commonOrdered.map(l => benchmark.monthlyRets[benchmark.labels.indexOf(l)] || 0);
+        cumBenchmark = cumulativeFromReturns(benchRets);
+      }
+      const total = (cumPortfolio[cumPortfolio.length - 1] / 100 - 1) * 100;
+      const years = portRets.length / 12;
+      const cagr  = years > 0 ? (Math.pow(cumPortfolio[cumPortfolio.length - 1] / 100, 1 / years) - 1) * 100 : 0;
+      const mdd   = maxDrawdown(cumPortfolio);
+
+      return { meanAnnual, volAnnual, sharpe, cumPortfolio, cumBenchmark, labels: commonOrdered, total, cagr, mdd };
+    }
+
+    function avg(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
+    function cumulativeFromReturns(retsPct) {
+      let v = 100; const out = [v];
+      retsPct.forEach(r => { v *= 1 + r / 100; out.push(v); });
+      return out;
+    }
+    function maxDrawdown(cum) {
+      let peak = cum[0], mdd = 0;
+      for (const v of cum) {
+        if (v > peak) peak = v;
+        const dd = (v - peak) / peak;
+        if (dd < mdd) mdd = dd;
+      }
+      return mdd * 100;   // % negativo
+    }
+
+    // ═══ ACCIONES ════════════════════════════════════════════
+    let assetSeq = 0;
+    function setUnit(unit) {
+      dispatch(s => { s.unit = unit; });
+    }
+    /** Riesgoso: requiere fetch a Yahoo (precio + retornos históricos). */
+    async function addRisky(ticker) {
+      ticker = (ticker || '').trim().toUpperCase();
+      if (!ticker) return;
+      if (state.assets.some(a => a.klass === 'risky' && a.ticker === ticker)) {
+        errRiskyEl.textContent = `${ticker} ya está en el portafolio`;
+        return;
+      }
+      errRiskyEl.textContent = '';
+      const id = ++assetSeq;
+      const color = PM_PALETTE[state.assets.filter(a => a.klass === 'risky').length % PM_PALETTE.length];
+      dispatch(s => {
+        s.assets.push({
+          id, ticker, klass: 'risky', color,
+          value: s.unit === 'qty' ? 10 : (s.unit === 'usd' ? 1000 : 25),
+          price: null, monthlyRets: null, monthlyCloses: null, labels: null,
+          status: 'loading', error: null,
+        });
+      });
+
+      try {
+        const data = await fetchAssetData(ticker);
+        dispatch(s => {
+          const a = s.assets.find(x => x.id === id);
+          if (!a) return;
+          Object.assign(a, data, { status: 'ready' });
+        });
+      } catch (e) {
+        dispatch(s => {
+          const a = s.assets.find(x => x.id === id);
+          if (!a) return;
+          a.status = 'error';
+          a.error  = e.message || 'error';
+        });
+      }
+    }
+
+    /** Renta fija: no se fetchea nada. Sólo nombre + TIR anual + monto. */
+    function addFixed(name, tirAnnualPct) {
+      const tir = parseFloat(tirAnnualPct);
+      if (!isFinite(tir) || tir <= 0) {
+        errFixedEl.textContent = 'Ingresá una TIR válida (> 0)';
+        return;
+      }
+      errFixedEl.textContent = '';
+      const id = ++assetSeq;
+      const klassCount = state.assets.filter(a => a.klass === 'fixed').length;
+      const color = RF_PALETTE[klassCount % RF_PALETTE.length];
+      const displayName = (name && name.trim()) || `Renta Fija ${klassCount + 1}`;
+      dispatch(s => {
+        s.assets.push({
+          id, ticker: displayName, klass: 'fixed', color,
+          value: s.unit === 'pct' ? 25 : 1000,
+          tir: tir,                  // TIR anual en %
+          status: 'ready',           // disponible inmediatamente, sin fetch
+          error: null,
+        });
+      });
+    }
+    function removeAsset(id) {
+      dispatch(s => { s.assets = s.assets.filter(a => a.id !== id); });
+    }
+    function updateAssetValue(id, value) {
+      dispatch(s => {
+        const a = s.assets.find(x => x.id === id);
+        if (a) a.value = isFinite(value) ? Math.max(0, value) : 0;
+      });
+    }
+
+    // ═══ RENDER ══════════════════════════════════════════════
+    function fmtMoney(v) {
+      if (!isFinite(v)) return '—';
+      return v.toLocaleString('es-AR', { style: 'currency', currency: 'USD',
+        maximumFractionDigits: 2, minimumFractionDigits: 0 }).replace(/US\$|USD/g, '$');
+    }
+    function fmtPct(v, dec = 1) {
+      if (!isFinite(v)) return '—';
+      return (v >= 0 ? '+' : '') + v.toFixed(dec) + '%';
+    }
+
+    function renderUnitToggle() {
+      unitToggle.querySelectorAll('button').forEach(b => {
+        b.classList.toggle('active', b.dataset.unit === state.unit);
+      });
+    }
+
+    function rowHtml(a, unit) {
+      const isFixed = a.klass === 'fixed';
+      // En QTY, renta fija queda lockeada a USD
+      const effectiveUnit = (unit === 'qty' && isFixed) ? 'usd' : unit;
+      const suffix = effectiveUnit === 'pct' ? '%' : (effectiveUnit === 'usd' ? '$' : '#');
+      let sub;
+      if (isFixed) {
+        sub = `<span class="pm-row-sub">TIR ${a.tir.toFixed(2)}% anual</span>`;
+      } else if (a.status === 'loading') {
+        sub = `<span class="pm-row-sub pm-loading">Cargando ${a.ticker}…</span>`;
+      } else if (a.status === 'error') {
+        sub = `<span class="pm-row-sub pm-err">${a.error}</span>`;
+      } else {
+        sub = `<span class="pm-row-sub">Riesgoso · $${(a.price || 0).toFixed(2)}</span>`;
+      }
+      return `
+        <div class="pm-row${a.status === 'error' ? ' has-error' : ''}" data-id="${a.id}">
+          <span class="pm-dot" style="background:${a.color}"></span>
+          <div class="pm-row-main">
+            <span class="pm-row-tkr">${a.ticker}</span>
+            ${sub}
+          </div>
+          <div class="pm-row-input">
+            ${effectiveUnit === 'usd' ? '<span class="pm-unit-suffix">$</span>' : ''}
+            <input type="number" min="0" step="${effectiveUnit === 'qty' ? '1' : '0.01'}"
+                   value="${a.value}" data-id="${a.id}" inputmode="decimal">
+            ${effectiveUnit !== 'usd' ? `<span class="pm-unit-suffix">${suffix}</span>` : ''}
+          </div>
+          <button type="button" class="pm-row-remove" data-remove="${a.id}" title="Quitar">×</button>
+        </div>
+      `;
+    }
+
+    function renderAssetSections() {
+      const unit = state.unit;
+      const risky = state.assets.filter(a => a.klass === 'risky');
+      const fixed = state.assets.filter(a => a.klass === 'fixed');
+
+      listRiskyEl.innerHTML = risky.length
+        ? risky.map(a => rowHtml(a, unit)).join('')
+        : '<div class="pm-empty">Sin acciones aún ↓</div>';
+      listFixedEl.innerHTML = fixed.length
+        ? fixed.map(a => rowHtml(a, unit)).join('')
+        : '<div class="pm-empty">Sin renta fija aún ↓</div>';
+
+      countRiskyEl.textContent = risky.length;
+      countFixedEl.textContent = fixed.length;
+
+      // Wire inputs y removes (sobre ambas listas)
+      root.querySelectorAll('.pm-asset-list input[type="number"]').forEach(inp => {
+        inp.addEventListener('input', e => {
+          const id = parseInt(e.target.dataset.id, 10);
+          updateAssetValue(id, parseFloat(e.target.value));
+        });
+      });
+      root.querySelectorAll('.pm-asset-list [data-remove]').forEach(btn => {
+        btn.addEventListener('click', () => removeAsset(parseInt(btn.dataset.remove, 10)));
+      });
+    }
+
+    // Donut: reutilizamos el helper de la sección Portafolio (donutSegmentPath
+    // está en otro IIFE, así que reimplementamos acá compacto)
+    function donutSeg(cx, cy, rO, rI, a1, a2) {
+      const d = a2 - a1;
+      if (d <= 1e-6) return '';
+      const big = d > Math.PI ? 1 : 0;
+      const x1 = cx + rO*Math.cos(a1), y1 = cy + rO*Math.sin(a1);
+      const x2 = cx + rO*Math.cos(a2), y2 = cy + rO*Math.sin(a2);
+      const x3 = cx + rI*Math.cos(a2), y3 = cy + rI*Math.sin(a2);
+      const x4 = cx + rI*Math.cos(a1), y4 = cy + rI*Math.sin(a1);
+      return `M${x1} ${y1} A${rO} ${rO} 0 ${big} 1 ${x2} ${y2} L${x3} ${y3} A${rI} ${rI} 0 ${big} 0 ${x4} ${y4} Z`;
+    }
+    function renderDonutAndMetrics() {
+      const norm = normalizeWeights(state);
+      // Donut
+      if (!norm.rows.length || norm.rows.every(r => r.weight <= 0)) {
+        donutEl.innerHTML = '<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="76" fill="none" stroke="var(--border)" stroke-width="22" stroke-dasharray="4,6"/><text x="100" y="105" text-anchor="middle" font-size="11" fill="var(--text-light)" font-weight="700">SIN DATOS</text></svg>';
+        legendEl.innerHTML = '';
+        vtpEl.textContent = '—';
+      } else {
+        const cx = 100, cy = 100, rO = 92, rI = 60;
+        let ang = -Math.PI / 2;
+        let svg = '<svg viewBox="0 0 200 200">';
+        norm.rows.forEach(r => {
+          if (r.weight <= 0) return;
+          const a2 = ang + r.weight * 2 * Math.PI;
+          svg += `<path class="ds" d="${donutSeg(cx, cy, rO, rI, ang, a2)}" fill="${r.asset.color}"
+                     data-label="${r.asset.ticker}" data-pct="${(r.weight * 100).toFixed(1)}"/>`;
+          ang = a2;
+        });
+        const centerPct = norm.balanced ? '100%' : (norm.sumPct.toFixed(0) + '%');
+        svg += `<text class="donut-center donut-center-pct" x="100" y="100" text-anchor="middle" dominant-baseline="middle">${centerPct}</text>`;
+        svg += `<text class="donut-center donut-center-lbl" x="100" y="124" text-anchor="middle" dominant-baseline="middle">Total</text>`;
+        svg += '</svg>';
+        donutEl.innerHTML = svg;
+
+        // Leyenda
+        legendEl.innerHTML = norm.rows
+          .filter(r => r.weight > 0)
+          .map(r => `<div><span class="pl-dot" style="background:${r.asset.color}"></span>
+                     <strong>${r.asset.ticker}</strong> ${(r.weight * 100).toFixed(1)}%</div>`).join('');
+
+        // VTP visible si unit ≠ pct
+        if (state.unit === 'pct') {
+          vtpEl.textContent = norm.balanced ? '✓ Balanceada' : `${norm.sumPct.toFixed(0)}% asignado`;
+          vtpEl.style.color = norm.balanced ? 'var(--green)' : '#f59e0b';
+        } else {
+          vtpEl.textContent = 'VTP: ' + fmtMoney(norm.totalUsd);
+          vtpEl.style.color = 'var(--blue)';
+        }
+      }
+
+      // Warning de desbalance (sólo en pct)
+      if (state.unit === 'pct' && norm.rows.length && !norm.balanced) {
+        warningEl.hidden = false;
+        warningEl.textContent = `⚠ Cartera desbalanceada: la suma es ${norm.sumPct.toFixed(1)}%, no 100%.`;
+      } else {
+        warningEl.hidden = true;
+      }
+
+      // Métricas
+      const portfolio = computePortfolio(norm.rows, state.benchmark);
+      if (!portfolio) {
+        retEl.textContent = volEl.textContent = shrEl.textContent = '—';
+        renderLineChart(null);
+        totalEl.textContent = cagrEl.textContent = mddEl.textContent = '—';
+        return;
+      }
+      retEl.textContent = fmtPct(portfolio.meanAnnual, 2);
+      volEl.textContent = portfolio.volAnnual.toFixed(2) + '%';
+      shrEl.textContent = portfolio.sharpe.toFixed(2);
+      totalEl.textContent = fmtPct(portfolio.total, 1);
+      cagrEl.textContent  = fmtPct(portfolio.cagr, 2);
+      mddEl.textContent   = portfolio.mdd.toFixed(1) + '%';
+      renderLineChart(portfolio);
+    }
+
+    function renderLineChart(p) {
+      if (!p) {
+        lineChartEl.innerHTML = '<div class="pm-line-empty">Agregá activos para ver la performance histórica</div>';
+        return;
+      }
+      const cumP = p.cumPortfolio, cumB = p.cumBenchmark;
+      const w = 800, h = 240, pad = 14;
+      const allVals = cumP.concat(cumB || []);
+      const mn = Math.min(...allVals), mx = Math.max(...allVals);
+      const span = (mx - mn) || 1;
+      const ys = v => pad + (1 - (v - mn) / span) * (h - 2 * pad);
+      const xs = (i, n) => (i / (n - 1)) * w;
+
+      function pathFor(arr, color, animClass) {
+        const n = arr.length;
+        let line = '';
+        arr.forEach((v, i) => { line += (i ? 'L' : 'M') + xs(i, n).toFixed(1) + ',' + ys(v).toFixed(1); });
+        return `<path class="${animClass || ''}" d="${line}" stroke="${color}" stroke-width="2.3" fill="none"
+                 stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+      let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">`;
+      svg += `<line x1="0" y1="${ys(100)}" x2="${w}" y2="${ys(100)}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,4"/>`;
+      if (cumB) svg += pathFor(cumB, 'var(--text-light)');
+      svg += pathFor(cumP, 'var(--blue)', 'chart-line-anim');
+      svg += '</svg>';
+      lineChartEl.innerHTML = svg;
+    }
+
+    function renderAll() {
+      renderUnitToggle();
+      renderAssetSections();
+      renderDonutAndMetrics();
+    }
+    subscribe(renderAll);
+
+    // ═══ WIRE UP ═════════════════════════════════════════════
+    unitToggle.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-unit]');
+      if (btn) setUnit(btn.dataset.unit);
+    });
+
+    // Submit del form de riesgosos (con fetch async)
+    addRiskyForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const tkr = newTickerEl.value;
+      const btn = addRiskyForm.querySelector('.pm-add-btn');
+      btn.disabled = true;
+      try {
+        await addRisky(tkr);
+        newTickerEl.value = '';
+      } catch (err) {
+        errRiskyEl.textContent = err.message || 'Error agregando ticker';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // Submit del form de renta fija (síncrono, sin fetch)
+    addFixedForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = rfNameEl.value;
+      const tir = rfTirEl.value;
+      addFixed(name, tir);
+      // Si la TIR es válida limpiamos; si no, dejamos el campo para corregir
+      if (parseFloat(tir) > 0) { rfNameEl.value = ''; rfTirEl.value = ''; }
+    });
+
+    // Carga inicial del benchmark SPY (en paralelo)
+    fetchMonthly('SPY').then(d => {
+      dispatch(s => {
+        s.benchmark = { ticker: 'SPY', monthlyRets: d.returns, labels: d.labels };
+        s.benchmarkLoading = false;
+      });
+    }).catch(() => {
+      dispatch(s => { s.benchmarkLoading = false; });
+    });
+
+    // Render inicial
+    renderAll();
   })();
 </script>
 </body>
